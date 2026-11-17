@@ -1,0 +1,14 @@
+<resources>
+    <color name="bg">#F3F4F8</color>
+    <color name="card">#FFFFFF</color>
+    <color name="text">#1B1E24</color>
+    <color name="sub">#5F6672</color>
+    <color name="accent">#5059C9</color>
+    <color name="on_accent">#FFFFFF</color>
+    <color name="chip">#E7E9F0</color>
+    <color name="divider">#E6E8EE</color>
+    <color name="ok">#1E8E3E</color>
+    <color name="warn">#C5221F</color>
+    <color name="alarm_bg">#3D44A8</color>
+    <color name="icon_bg">#5059C9</color>
+</resources>
