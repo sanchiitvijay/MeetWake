@@ -25,7 +25,11 @@ no account and no internet permission.
 | Invite: "…invited you… tomorrow at 11:30", "Thu, Nov 19 3:00 PM" | Alarm on that day and time |
 | "X started a meeting", "Meet now", or no time given | Rings right away |
 | Incoming or missed Teams call | Rings right away (can be turned off) |
-| Chat: "can you join the call?" | Rings right away (can be turned off) |
+| Chat: "can you join the call?", "are you there?", "urgent" | Rings right away (can be turned off) |
+| Hinglish: "meeting join karo", "call pe aao", "jaldi aao", "kahan ho?" | Rings right away |
+| Hindi: "मीटिंग शुरू", "जल्दी जुड़ो", "कॉल करो", "कहाँ हो?" | Rings right away |
+| Times: "10 min me", "shaam 5 baje", "kal subah 11 baje", "5 मिनट में", "दोपहर 3 बजे" | Alarm at that time |
+| A chat message from someone on your **Friends** list | Ignored (meeting reminders and calls still count) |
 | "Canceled: …" | Removes the matching alarm |
 | "Updated/rescheduled the meeting" | Moves the alarm |
 | Meeting ended, recordings, reactions | Ignored |
@@ -35,6 +39,16 @@ It only rings when **all** of these are true:
 - That day is a **WFH day**. This comes from your weekdays, or from your answer to the 10 PM "WFH tomorrow?" question.
 - You haven't said you're **awake**. Tap "I'm awake" on the alarm, on the awake-check notification, or in the app.
   You count as asleep again when a **nap period** starts, and from 3 hours before your next shift.
+
+### Friends
+
+Add people under **Friends (ignored)** and their Teams **chat messages** never ring. It's a case-insensitive
+"contains" match on the **sender's name**: `rahul` matches "Rahul Sharma". In group chats the actual sender
+of the message is checked, not the group's title. A friend's name mentioned inside someone else's message
+doesn't count.
+
+Only chat messages are checked. Meeting reminders, invites, "meeting started" notifications and calls are
+never filtered, even if a friend's name appears in them or a friend sent the invite.
 
 ### Alarm and Teams call never clash
 

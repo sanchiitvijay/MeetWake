@@ -47,6 +47,8 @@ data class Config(
     val maxVolume: Boolean = true,
     val ringtoneUri: String? = null,
     val keepConnected: Boolean = false,
+    /** People whose Teams messages/calls are ignored. Case-insensitive substring of the sender name. */
+    val friends: List<String> = emptyList(),
 )
 
 enum class Verdict(val ring: Boolean, val reason: String) {

@@ -91,6 +91,7 @@ class MainActivity : Activity() {
         awakeCard(cfg)
         alarmCard(cfg)
         detectionCard(cfg)
+        friendsCard(cfg)
         testCard()
         logCard()
 
@@ -320,10 +321,12 @@ class MainActivity : Activity() {
 
     private fun detectionCard(cfg: Config) {
         val card = card("What counts as a meeting")
-        card.row("Always", null, "Meeting invites, reminders (\"starts in 5 min\"), \"meeting started\", Meet now")
+        card.row("Always", null, "Meeting invites, reminders (\"starts in 5 min\"), \"meeting started\", Meet now, " +
+            "\"please join\", \"waiting for you\" — also in Hinglish (\"meeting join karo\", \"jaldi aao\") and Hindi (\"मीटिंग शुरू\", \"जल्दी जुड़ो\")")
         card.divider()
         card.switchRow("Teams calls", "Incoming and missed calls", cfg.ringForCalls) { v -> update { it.copy(ringForCalls = v) } }
-        card.switchRow("Chat messages about a meeting", "e.g. \"can you join the call?\" — may ring for casual mentions too", cfg.broadChat) { v ->
+        card.switchRow("Chat messages about a meeting",
+            "e.g. \"can you join the call?\", \"call pe aao\", \"kahan ho?\", \"कॉल करो\" — may ring for casual mentions too", cfg.broadChat) { v ->
             update { it.copy(broadChat = v) }
         }
         card.divider()
@@ -342,6 +345,31 @@ class MainActivity : Activity() {
         card.switchRow("Stay connected outside work hours",
             "Off (lightest): the listener disconnects outside your work hours", cfg.keepConnected) { v ->
             update { it.copy(keepConnected = v) }
+        }
+    }
+
+    private fun friendsCard(cfg: Config) {
+        val card = card("Friends (ignored)")
+        card.row("Chat messages from these people never ring", null,
+            "Matches any part of the sender's name, ignoring case: \"rahul\" matches \"Rahul Sharma\". " +
+                "Only chat messages are checked: meeting reminders, invites and calls always count.")
+        cfg.friends.forEach { f ->
+            card.divider()
+            card.row(f, "Remove") { update { c -> c.copy(friends = c.friends - f) } }
+        }
+        card.divider()
+        card.row("+ Add a friend", null, "Type a name as it shows in Teams") {
+            val input = EditText(this).apply {
+                hint = "e.g. Rahul Sharma"
+                inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_FLAG_CAP_WORDS
+            }
+            AlertDialog.Builder(this).setTitle("Add a friend").setView(padded(input))
+                .setPositiveButton("Add") { _, _ ->
+                    val name = input.text.toString().trim()
+                    if (name.isNotEmpty()) update { c ->
+                        if (c.friends.any { it.equals(name, ignoreCase = true) }) c else c.copy(friends = c.friends + name)
+                    }
+                }.setNegativeButton("Cancel", null).show()
         }
     }
 

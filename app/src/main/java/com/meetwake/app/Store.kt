@@ -78,6 +78,7 @@ object Store {
             maxVolume = p.getBoolean("maxVolume", d.maxVolume),
             ringtoneUri = p.getString("ringtoneUri", null),
             keepConnected = p.getBoolean("keepConnected", d.keepConnected),
+            friends = p.getString("friends", "")!!.split("\n").map { it.trim() }.filter { it.isNotEmpty() },
         )
     }
 
@@ -102,6 +103,7 @@ object Store {
             .putBoolean("maxVolume", cfg.maxVolume)
             .putString("ringtoneUri", cfg.ringtoneUri)
             .putBoolean("keepConnected", cfg.keepConnected)
+            .putString("friends", cfg.friends.joinToString("\n"))
             .apply()
     }
 

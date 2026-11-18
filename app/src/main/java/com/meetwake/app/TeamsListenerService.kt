@@ -78,7 +78,8 @@ class TeamsListenerService : NotificationListenerService() {
         add(ex.getCharSequence(Notification.EXTRA_SUB_TEXT))
         add(ex.getCharSequence(Notification.EXTRA_SUMMARY_TEXT))
         ex.getCharSequenceArray(Notification.EXTRA_TEXT_LINES)?.takeLast(3)?.forEach(::add)
-        lastMessage(ex)?.let(::add)
+        val last = lastMessage(ex)
+        last?.getCharSequence("text")?.let(::add)
         val text = parts.joinToString("\n")
         if (title.isEmpty() && text.isEmpty()) return null
         return NotifInput(
@@ -88,13 +89,21 @@ class TeamsListenerService : NotificationListenerService() {
             hasFullScreenIntent = n.fullScreenIntent != null,
             ongoing = n.flags and Notification.FLAG_ONGOING_EVENT != 0,
             postedAt = Store.toLocal(postTime),
+            isMessage = n.category == Notification.CATEGORY_MESSAGE || ex.containsKey(Notification.EXTRA_MESSAGES) ||
+                ex.getString(Notification.EXTRA_TEMPLATE)?.endsWith("MessagingStyle") == true,
+            senders = listOfNotNull(last?.let(::senderOf)?.toString()?.takeIf { it.isNotBlank() }),
         )
     }
 
     /** Chat notifications use MessagingStyle; the newest message is the one that matters. */
     @Suppress("DEPRECATION")
-    private fun lastMessage(ex: Bundle): CharSequence? {
+    private fun lastMessage(ex: Bundle): Bundle? {
         val arr: Array<Parcelable> = ex.getParcelableArray(Notification.EXTRA_MESSAGES) ?: return null
-        return (arr.lastOrNull() as? Bundle)?.getCharSequence("text")
+        return arr.lastOrNull() as? Bundle
     }
+
+    /** Sender name of a MessagingStyle message bundle ("sender" text or "sender_person" Person). */
+    @Suppress("DEPRECATION")
+    private fun senderOf(msg: Bundle): CharSequence? =
+        msg.getCharSequence("sender") ?: (msg.getParcelable<Parcelable>("sender_person") as? android.app.Person)?.name
 }
